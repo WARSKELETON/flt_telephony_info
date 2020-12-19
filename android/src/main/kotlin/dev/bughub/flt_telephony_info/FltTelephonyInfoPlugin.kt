@@ -29,12 +29,45 @@ class FltTelephonyInfoPlugin(var registrar: Registrar) : MethodCallHandler {
             val telephonyManager = registrar.activeContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
 
-//            if (ContextCompat.checkSelfPermission(registrar.activeContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED
-//                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//                Log.i("getTelephonyInfo", telephonyManager.allCellInfo.toString())
-//            }
-
             val resultMap = HashMap<String, Any?>()
+
+            val tmpCellList =  mutableListOf<String>() 
+
+            if (ContextCompat.checkSelfPermission(registrar.activeContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED
+                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                Log.i("getTelephonyInfo", telephonyManager.allCellInfo.toString())
+                val cellInfo = telephonyManager.allCellInfo
+                if (cellLocation != null) {  //verify if is'nt null
+                    for (info in cellLocation) {    // Loop for go through Muteablelist
+                        if (info is CellInfoGsm) {  //verify if Network is Gsm type
+
+                            // val gsm = (info as CellInfoGsm).cellSignalStrength  //get the cell Signal strength  
+                            val identityGsm = (info as CellInfoGsm).cellIdentity   //get the cellIdentity data 
+                            val defineTextLAC = getString(R.string.lac, "lola"+identityGsm.lac)  //get the LAC(LOCATION AREA CODE) string
+                            tmpCellList.add(defineTextLAC) 
+                        }else if(info is CellInfoCdma) {     //verify if Network is Cdma type
+
+                            val identityCdma = info.cellIdentity    //get the cellIdentity data 
+                            val defineTextLAC = getString(R.string.lac, "lola"+identityCdma.basestationId)   //get the (basestationId) string
+                            defineTextLAC      //get the LAC(LOCATION AREA CODE) string
+                            tmpCellList.add(defineTextLAC)
+                        }else if(info is CellInfoLte) {       //verify if Network is LTE type
+
+                            val identityLte = info.cellIdentity     //get the cellIdentity data
+                            val defineTextLAC = getString(R.string.lac, "pop"+identityLte.ci)       //get the CI(CellIdentity) string
+                            tmpCellList.add(defineTextLAC)
+
+                        }else if  (lCurrentApiVersion >= Build.VERSION_CODES.JELLY_BEAN_MR2 && info is CellInfoWcdma) { //verify if Network is Wcdma and version SFK match with te network type
+
+                            val identityWcdma = info.cellIdentity       //get the cellIdentity data
+                            val defineTextLAC = getString(R.string.lac, "lola"+identityWcdma.cid) //  get the Cid(CellIdentity) string  
+                            tmpCellList.add(defineTextLAC)
+                        }
+                    }
+                }
+            }
+
+            resultMap["cells"] = tmpCellList
 
             /**
              * 当前电话状态

@@ -133,6 +133,7 @@ class TelephonyInfo {
     this.simOperator,
     this.simOperatorName,
     this.simSerialNumber,
+    this.cells,
   });
 
   ///当前电话状态
@@ -209,6 +210,8 @@ class TelephonyInfo {
   String simOperatorName;
   String simSerialNumber;
 
+  List<String> cells;
+
   static Map<String, dynamic> _map;
 
   static TelephonyInfo fromMap(Map<String, dynamic> map) {
@@ -238,6 +241,7 @@ class TelephonyInfo {
       simOperator: map["simOperator"],
       simOperatorName: map["simOperatorName"],
       simSerialNumber: map["simSerialNumber"],
+      cells: List.from(map["cells"]),
     );
   }
 
