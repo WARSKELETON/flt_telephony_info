@@ -38,8 +38,8 @@ class FltTelephonyInfoPlugin(var registrar: Registrar) : MethodCallHandler {
                     && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 Log.i("getTelephonyInfo", telephonyManager.allCellInfo.toString())
                 val cellInfo = telephonyManager.allCellInfo
-                if (cellLocation != null) {
-                    for (info in cellLocation) {  
+                if (cellInfo != null) {
+                    for (info in cellInfo) {  
                         if (info is CellInfoGsm) {
                             // val gsm = (info as CellInfoGsm).cellSignalStrength  
                             val identityGsm = (info as CellInfoGsm).cellIdentity   
