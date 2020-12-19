@@ -7,6 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import android.telephony.TelephonyManager
 import android.telephony.CellInfo
+import android.telephony.CellInfoGsm
+import android.telephony.CellInfoCdma
+import android.telephony.CellInfoLte
+import android.telephony.CellInfoWcdma
 import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -43,24 +47,23 @@ class FltTelephonyInfoPlugin(var registrar: Registrar) : MethodCallHandler {
                         if (info is CellInfoGsm) {
                             // val gsm = (info as CellInfoGsm).cellSignalStrength  
                             val identityGsm = (info as CellInfoGsm).cellIdentity   
-                            val defineTextLAC = identityGsm.lac.toString()  
-                            tmpCellList.add(defineTextLAC) 
+                            val cid = identityGsm.cid.toString()  
+                            tmpCellList.add(cid) 
                         }else if(info is CellInfoCdma) {     
 
                             val identityCdma = info.cellIdentity    
-                            val defineTextLAC = identityCdma.basestationId.toString()   
-                            tmpCellList.add(defineTextLAC)
+                            val cid = identityCdma.basestationId.toString()   
+                            tmpCellList.add(cid)
                         }else if(info is CellInfoLte) {       
 
                             val identityLte = info.cellIdentity     
-                            val defineTextLAC = identityLte.ci.toString()       
-                            tmpCellList.add(defineTextLAC)
-
-                        }else if  (lCurrentApiVersion >= Build.VERSION_CODES.JELLY_BEAN_MR2 && info is CellInfoWcdma) { 
+                            val cid = identityLte.ci.toString()       
+                            tmpCellList.add(cid)
+                        }else if  (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && info is CellInfoWcdma) { 
 
                             val identityWcdma = info.cellIdentity       
-                            val defineTextLAC = identityWcdma.cid.toString() 
-                            tmpCellList.add(defineTextLAC)
+                            val cid = identityWcdma.cid.toString() 
+                            tmpCellList.add(cid)
                         }
                     }
                 }
